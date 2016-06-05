@@ -37,6 +37,9 @@ symlink-bindir: $BINDIR
 EOF
 cabal update
 
+echo "Downloading supporting libraries"
+apt-get install libgmp-dev
+
 echo "Installing Alex and Happy"
 cabal install alex happy
 
