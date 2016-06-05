@@ -14,10 +14,6 @@ mkdir -p $BINDIR
 
 pushd $CACHEDIR
 
-# echo "Downloading Haskell Platform"
-# wget https://www.haskell.org/platform/download/7.10.3/haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
-# tar xf haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
-
 echo "Downloading GHC"
 wget http://downloads.haskell.org/~ghc/7.10.3/ghc-7.10.3b-x86_64-deb8-linux.tar.xz
 tar xf ghc-7.10.3b-x86_64-deb8-linux.tar.xz
@@ -39,6 +35,7 @@ remote-repo: hackage.haskell.org:http://hackage.haskell.org
 remote-repo-cache:$CABALCACHE
 symlink-bindir: $BINDIR
 EOF
+cabal update
 
 echo "Installing Alex and Happy"
 cabal install alex happy
