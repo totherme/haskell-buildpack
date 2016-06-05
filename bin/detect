@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cd $1
+
+if test -f cabal.project
+then echo "New fangled haskell cabal, not yet supported" ; exit 1
+fi
+
+if test -f stack.yml
+then echo "New fangled haskell stack, not yet supported" ; exit 1
+fi
+
+if test -n "$(find "$1" -maxdepth 1 -name '*.cabal' -print -quit)"
+then echo Haskell; exit 0
+fi
+
+exit 1
+

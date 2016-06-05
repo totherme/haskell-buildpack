@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -eo pipefail
+
+BUILDDIR=$1
+CACHEDIR=$2
+CABALCACHE=$CACHEDIR/cabalcache
+BINDIR=$CACHEDIR/bin
+export PATH=$PATH:$BINDIR
+
+mkdir -p $HOME/.cabal
+mkdir -p $CABALCACHE
+mkdir -p $BINDIR
+
+pushd $CACHEDIR
+
+# echo "Downloading Haskell Platform"
+# wget https://www.haskell.org/platform/download/7.10.3/haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
+# tar xf haskell-platform-7.10.3-unknown-posix-x86_64.tar.gz
+
+echo "Downloading GHC"
+wget http://downloads.haskell.org/~ghc/7.10.3/ghc-7.10.3b-x86_64-deb8-linux.tar.xz
+tar xf ghc-7.10.3b-x86_64-deb8-linux.tar.xz
+pushd ghc-7.10.3/
+echo "Installing GHC"
+./configure --prefix=$CACHEDIR
+make install
+popd
+
+echo "Downloading Cabal"
+wget https://www.haskell.org/cabal/release/cabal-install-1.24.0.0/cabal-install-1.24.0.0-x86_64-unknown-linux.tar.gz
+pushd $BINDIR
+tar xf $CACHEDIR/cabal-install-1.24.0.0-x86_64-unknown-linux.tar.gz
+popd
+
+echo "Giving cabal some sensible defaults"
+cat > $HOME/.cabal/config <<EOF
+remote-repo: hackage.haskell.org:http://hackage.haskell.org
+remote-repo-cache:$CABALCACHE
+symlink-bindir: $BINDIR
+EOF
+
+echo "Installing Alex and Happy"
+cabal install alex happy
+
+echo "Haskell environment setup. Now to build your app."
+popd
+
+pushd $BUILDDIR
+cabal install --prefix=$BUILDDIR 
+popd

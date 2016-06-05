@@ -1,0 +1,13 @@
+#!/bin/bash
+
+EXEC=$(cat *.cabal | grep -i "^executable" | awk -F' ' -e '{ print $2 }' | head -n 1)
+
+if [ -z $EXEC ]
+then echo "No sensible start command found. You'll have to override it in your manifest."
+fi
+
+cat <<EOF
+config_vars:
+default_process_types:
+  web: ./bin/$EXEC
+EOF
